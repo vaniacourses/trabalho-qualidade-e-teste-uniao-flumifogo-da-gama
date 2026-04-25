@@ -4,7 +4,9 @@ Repositório contendo a primeira entrega do trabalho prático de Qualidade e Tes
 
 ## Documentos
 Documento dos testes unitários: `plano_testes_unitarios.pdf` <br/>
-Documento do plano de teste: `plano_testes_manuais.csv`
+Documento do plano de teste: `plano_testes_manuais.csv` <br/>
+Documento teste manual utilizando a ferramenta TestLink: [teste_manual_testlink.pdf](https://github.com/user-attachments/files/27092109/testreport.Teste.de.funcionalidade.do.site.TrackOrJargh.pdf)
+
 
 ## Separação dos códigos fonte
 - Pasta winxbank é o código fonte do sistema bancário onde foram feitos os testes unitários.
