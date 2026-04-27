@@ -1,13 +1,17 @@
 package br.winxbank;
 
-import br.winxbank.sistemaclientes.ClienteWinx;
-import br.winxbank.sistemabancario.Cartao;
-import br.winxbank.sistemabancario.Conta;
-import br.winxbank.sistemabancario.Movimentacao;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import br.winxbank.sistemabancario.Cartao;
+import br.winxbank.sistemabancario.Conta;
+import br.winxbank.sistemabancario.Movimentacao;
+import br.winxbank.sistemaclientes.ClienteWinx;
+
 
 public class ClienteWinxTest {
 
@@ -41,11 +45,20 @@ public class ClienteWinxTest {
     }
 
     @Test
+    void obterPontosDeCompra_acumulaCorretamente() {
+        for (int i = 0; i < 5; i++) {
+            cliente.obterPontosDeCompra();
+        }
+        assertEquals(5, cliente.getPontosDeCompra());
+    }
+
+
+    @Test
     void converterPontosEmSaldo_converteZeraPontosERegistraExtrato() {
         for (int i = 0; i < 5; i++) {
             cliente.obterPontosDeCompra();
         }
-
+        assertEquals(5, cliente.getPontosDeCompra());
         cliente.converterPontosEmSaldo(conta);
 
         assertEquals(0, cliente.getPontosDeCompra());
@@ -56,4 +69,15 @@ public class ClienteWinxTest {
         assertEquals(Movimentacao.TipoDaMovimentacao.ENTRADA, ultima.getTipoDaMovimentacao());
         assertEquals(15.0, ultima.getDinheiroMovimentado(), 0.0001);
     }
+
+    @Test
+    void converterPontosEmSaldo_comPontosNegativos() {
+    ClienteWinx clienteComPontosNegativos = new ClienteWinx("Ana", "123", -10);
+
+    double saldoAntes = conta.getSaldo();
+    clienteComPontosNegativos.converterPontosEmSaldo(conta);
+
+    assertTrue(saldoAntes > conta.getSaldo(),
+        "BUG: pontos negativos geraram conversão negativa e diminuíram o saldo.");
 }
+} 
