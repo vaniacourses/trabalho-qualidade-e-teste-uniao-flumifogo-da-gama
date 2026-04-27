@@ -4,7 +4,7 @@ Repositório contendo a primeira entrega do trabalho prático de Qualidade e Tes
 
 ## Documentos
 Documento dos testes unitários: `plano_testes_unitarios.pdf` <br/>
-Documento do plano de teste: `plano_testes_manuais.csv`
+Documento do plano de teste: `plano_testes_manuais.xlsx`
 
 ## Separação dos códigos fonte
 - Pasta winxbank é o código fonte do sistema bancário onde foram feitos os testes unitários.
