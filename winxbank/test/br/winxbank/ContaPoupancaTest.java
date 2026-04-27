@@ -63,6 +63,14 @@ class ContaPoupancaTest {
     }
 
     @Test
+    @DisplayName("setInformeRendimento com NULL deve lançar exceção")
+    void testValidacao_SetInformeRendimento_Null() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            contaPoupanca.setInformeRendimento(null);
+        }, "Deveria lançar exceção ao adicionar movimentação nula!");
+    }
+
+    @Test
     @DisplayName("getInformeRendimento: deve retornar lista vazia inicialmente")
     void testGetInformeRendimento_ListaVaziaNoInicio() {
         assertTrue(contaPoupanca.getInformeRendimento().isEmpty());
@@ -124,6 +132,18 @@ class ContaPoupancaTest {
         contaPoupanca.movimentacaoBancaria(0.0);
 
         assertEquals(despesasAntes, Banco.getInstancia().getDespesas(), 0.001);
+    }
+
+    @Test
+    @DisplayName("movimentacaoBancaria com valor NEGATIVO")
+    void testValidacao_MovimentacaoBancaria_ValorNegativo() {
+        double despesasAntes = Banco.getInstancia().getDespesas();
+
+        contaPoupanca.movimentacaoBancaria(-100.0);
+
+        // Valor negativo não deveria ser aceito
+        assertEquals(despesasAntes, Banco.getInstancia().getDespesas(),
+                "Movimento negativo não deveria alterar despesas!");
     }
 
     @Test
