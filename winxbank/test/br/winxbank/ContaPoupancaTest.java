@@ -112,8 +112,9 @@ class ContaPoupancaTest {
 
         contaNegativa.acrescentarRendimento();
 
-        double saldoEsperado = saldoAntes + (saldoAntes / RENDIMENTO_MENSAL);
-        assertEquals(saldoEsperado, contaNegativa.getSaldo(), 0.001);
+        // Saldo não deve mudar (ou aumentar, nunca ficar mais negativo)
+        assertEquals(saldoAntes, contaNegativa.getSaldo(), 0.001,
+                "Saldo negativo não deveria receber rendimento!");
     }
 
     @Test

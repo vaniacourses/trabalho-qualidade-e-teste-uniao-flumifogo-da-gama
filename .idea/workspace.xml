@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8379cb42-7382-4969-8223-3059f7b95a21" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp-1/Plano_Teste_Manual_Gerenciar_Perfil.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/winxbank/test/br/winxbank/ContaPoupancaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/winxbank/test/br/winxbank/ContaPoupancaTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
