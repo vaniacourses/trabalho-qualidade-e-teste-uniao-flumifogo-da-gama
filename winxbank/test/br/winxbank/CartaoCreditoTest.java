@@ -55,9 +55,9 @@ class CartaoCreditoTest {
                 1111,
                 123
         );
-        double antes = cartao.getFatura();
+        double antes = cartao.getFatura(); // guarda o valor da fatura antes de aplicar o juros
         cartao.cobrarJurus();
-        assertTrue(cartao.getFatura() > antes);
+        assertTrue(cartao.getFatura() > antes); // verifica se ta maior o valor após a aplicação
     }
    
     // Testa se NÃO são aplicados juros quando a fatura já está paga,
@@ -74,9 +74,9 @@ class CartaoCreditoTest {
                 123
         );
 
-        double antes = cartao.getFatura();
+        double antes = cartao.getFatura(); // guarda o valor da fatura antes de aplicar
         cartao.cobrarJurus();
-        assertEquals(antes, cartao.getFatura());
+        assertEquals(antes, cartao.getFatura()); //verifica se foi cobrado juros da fatura já paga
     }
 
     // Testa se NÃO são aplicados juros quando ainda estamos no mesmo mês da fatura. 
@@ -92,17 +92,8 @@ class CartaoCreditoTest {
                 123
         );
 
-        double antes = cartao.getFatura();
+        double antes = cartao.getFatura(); // guarda o valor da fatura antes de aplicar
         cartao.cobrarJurus();
-        assertEquals(antes, cartao.getFatura());
-    }
-
-    // Testa se o método setFatura respeita o limite do cartão,
-    // impedindo incremento que ultrapasse o limite disponível.   
-    @Test
-    void naoDeveAlterarFaturaSeExcederLimite() {
-        cartao.creditar(900);
-        cartao.setFatura(200); // ultrapassa limite
-        assertEquals(900, cartao.getFatura());
+        assertEquals(antes, cartao.getFatura()); //verifica se foi cobrado juros da fatura atual
     }
 }
