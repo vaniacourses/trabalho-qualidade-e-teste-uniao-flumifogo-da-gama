@@ -3,8 +3,8 @@
 Repositório contendo a primeira entrega do trabalho prático de Qualidade e Teste de Software, com implementação de testes unitários e testes manuais em dois sistemas diferentes.
 
 ## Documentos
-Documento dos testes unitários: `plano_testes_unitarios.pdf` <br/>
-Documento do plano de teste: `plano_testes_manuais.xlsx` <br/>
+Documento dos testes unitários: [plano_testes_unitarios.pdf](https://github.com/user-attachments/files/27446711/plano_testes_unitarios.pdf) <br/>
+Documento do plano de teste manuais: [plano_testes_manuais.xlsx](https://github.com/user-attachments/files/27446741/plano_testes_manuais.xlsx) <br/>
 Documento teste manual utilizando a ferramenta TestLink: [teste_manual_testlink.pdf](https://github.com/user-attachments/files/27092109/testreport.Teste.de.funcionalidade.do.site.TrackOrJargh.pdf)
 
 
