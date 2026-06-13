@@ -14,11 +14,18 @@
     <packaging>jar</packaging>
     <name>Winx-server</name>
     <description>Implementação de sistema bancário</description>
-    <properties>
+    
+   <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        
+        <byte-buddy.version>1.14.12</byte-buddy.version>
+        <mockito.version>5.11.0</mockito.version>
     </properties>
+    
     <repositories>
         <repository>
             <id>jcenter-snapshots</id>
@@ -31,8 +38,8 @@
             <url>https://repo.clojars.org/</url>
         </repository>
     </repositories>
+    
     <dependencies>
-        <!--Lib para JSON -->
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
@@ -53,7 +60,14 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+    
     <build>
         <sourceDirectory>src</sourceDirectory>
         <testSourceDirectory>test</testSourceDirectory>
@@ -80,6 +94,23 @@
                     <mainClass>br.winxbank.Main</mainClass>
                 </configuration>
             </plugin>
+            <plugin>
+    <groupId>org.pitest</groupId>
+    <artifactId>pitest-maven</artifactId>
+    <version>1.16.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-junit5-plugin</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+    </dependencies>
+    <configuration>
+        <jvmArgs>
+            <jvmArg>-XX:+EnableDynamicAgentLoading</jvmArg>
+        </jvmArgs>
+    </configuration>
+</plugin>
         </plugins>
     </build>
 </project>
