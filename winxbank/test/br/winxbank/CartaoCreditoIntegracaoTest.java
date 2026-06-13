@@ -78,5 +78,22 @@ void fluxoCompletoCreditoEAtraso_integracao() {
     assertTrue(cartao.getFatura() > antes);
 }
 
+@Test
+void naoDeveAlterarFaturaSeUltrapassarLimite_integracao() {
+    CartaoCredito cartao = new CartaoCredito(1111, 123);
 
+    cartao.creditar(1000); // limite cheio
+
+    cartao.setFatura(100); // tenta ultrapassar
+
+    assertEquals(1000, cartao.getFatura());
+}
+@Test
+void deveManterFaturaNegativa_integracao() {
+    CartaoCredito cartao = new CartaoCredito(1111, 123);
+
+    cartao.setFatura(-50); // já começa negativo
+
+    assertTrue(cartao.getFatura() <= 0);
+}
 }
