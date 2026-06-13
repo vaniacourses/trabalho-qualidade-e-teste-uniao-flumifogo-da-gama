@@ -14,13 +14,13 @@
 #intro {
   display: table !important;
   width: 100% !important;
-  height: 50vh !important;
+  height: 87vh !important;
   background: #000 !important;
 }
 
 #intro .carousel-item {
   width: 100% !important;
-  height: 50vh !important;
+  height: 87vh !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
@@ -103,3 +103,18 @@
     color:white;
     transition: 0.5s;
 }
+.moreContentButton{
+	color: #18d26e;
+}
+
+.btn-secondary {
+    color: #fff ;
+    background-color: #18d26e ;
+    border-color: #18d26e !important;
+}
+
+#dropdownMenu2:hover{
+	background: #fff;
+    color: #18d26e;
+}
+
