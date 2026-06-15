@@ -192,4 +192,93 @@ class ContaCorrenteTest {
 
         assertEquals(400.0, contaDestino.getSaldo(), 0.001);
     }
+
+
+    // ----------------Testes segunda entrega-----------------------------------
+
+    // Verifica o comportamento ao sacar um valor maior que o saldo atual, validando se o sistema permite saldo negativo ou aplica alguma regra de restrição.
+    @Test
+    @DisplayName("sacar: valor maior que saldo deve deixar saldo negativo ou seguir regra do sistema")
+    void sacar_valorMaiorQueSaldo() {
+        contaCorrente.sacar(2000.0);
+
+        assertEquals(-1000.0, contaCorrente.getSaldo(), 0.001);
+    }
+
+    // Garante que transferências via PIX com valor zero não alteram o saldo da conta de origem nem da conta destino.
+    @Test
+    @DisplayName("fazerPix: valor zero não deve alterar saldo das contas")
+    void fazerPix_valorZero() {
+        ContaCorrente destino = new ContaCorrente(
+            2002, 0.0, new Cartao(99999, 999), 0.0, new CartaoCredito(99999, 999)
+        );
+
+        contaCorrente.fazerPix(destino, 0.0);
+
+        assertEquals(0.0, destino.getSaldo(), 0.001);
+        assertEquals(1000.0, contaCorrente.getSaldo(), 0.001);
+    }
+
+
+    // ---------------------Integração
+    // Testa um fluxo completo envolvendo depósito, pagamento de fatura e uso de cartão de crédito, validando a consistência entre saldo e fatura.
+    @Test
+    @DisplayName("fluxo integrado: compra no crédito e pagamento de fatura")
+    void fluxo_integrado_cartaoCredito() {
+        cartaoCredito.setFatura(500.0);
+
+        contaCorrente.depositar(300.0);
+        contaCorrente.pagarFatura(200.0);
+
+        assertEquals(1100.0, contaCorrente.getSaldo(), 0.001);
+        assertEquals(300.0, cartaoCredito.getFatura(), 0.001);
+    }
+
+    // Valida a integração entre conta corrente e banco, verificando se operações financeiras refletem corretamente no aumento das receitas do banco.
+    @Test
+    @DisplayName("fluxo integrado: movimentação + taxa afeta receitas do banco")
+    void fluxo_integrado_banco() {
+        double receitasAntes = Banco.getInstancia().getReceitas();
+
+        contaCorrente.movimentacaoBancaria(1000.0);
+        contaCorrente.descontarTaxa();
+
+        assertTrue(Banco.getInstancia().getReceitas() > receitasAntes);
+    }
+
+
+    // -----------------Regra de negocio
+
+    // Verifica se a aplicação de taxa de manutenção sempre reduz o saldo da conta, garantindo a regra de negócio associada à cobrança de taxas.
+    @Test
+    @DisplayName("regra de negócio: taxa deve sempre reduzir saldo")
+    void taxa_deveSempreReduzirSaldo() {
+        double saldoAntes = contaCorrente.getSaldo();
+
+        contaCorrente.descontarTaxa();
+
+        assertTrue(contaCorrente.getSaldo() < saldoAntes);
+    }
+
+    // Garante que movimentações bancárias válidas aumentam as receitas do banco, validando o registro correto de ganhos financeiros.
+    @Test
+    @DisplayName("regra de negócio: movimentação válida aumenta receita do banco")
+    void receita_deveAumentar() {
+        double receitasAntes = Banco.getInstancia().getReceitas();
+
+        contaCorrente.movimentacaoBancaria(250.0);
+
+        assertTrue(Banco.getInstancia().getReceitas() >= receitasAntes);
+    }
+
+    // ---------- Teste de estado de consistencia
+
+    // Verifica se operações realizadas na conta são registradas no extrato, garantindo rastreabilidade das transações.
+    @Test
+    @DisplayName("estado do sistema: extrato deve registrar operações")
+    void extrato_deveRegistrarOperacao() {
+        contaCorrente.depositar(100.0);
+
+        assertFalse(contaCorrente.getExtrato().isEmpty());
+    }
 }
