@@ -30,19 +30,21 @@ public class ContaPoupanca extends Conta implements OperacoesAutomaticas{
      */
     @Override
     public void comprar(double valor) {
-        Scanner sc = new Scanner(System.in);
         System.out.println("A conta sera debitada...");
-            System.out.println("------------------------------------------------");
-            System.out.println(this.cartao.getNumero() + "\n" + this.cartao.csv);
-            System.out.println("------------------------------------------------");
-            System.out.println("Este e o cartao que deseja utilizar? Digite 1 (confirmar)");
-            int decisao2 = sc.nextInt();
-            if(decisao2 == 1){
-                cartao.debitar(this, valor);
-                System.out.println("Valor debitado.");
-            }
-            else{
-                System.out.println("Compra cancelada. Efetue a compra novamente.");
+        System.out.println("------------------------------------------------");
+        System.out.println(this.cartao.getNumero() + "\n" + this.cartao.csv);
+        System.out.println("------------------------------------------------");
+        System.out.println("Este e o cartao que deseja utilizar? Digite 1 (confirmar)");
+        int decisao = new Scanner(System.in).nextInt();
+        executarCompra(valor, decisao);
+    }
+
+    public void executarCompra(double valor, int decisao) {
+        if(decisao == 1){
+            cartao.debitar(this, valor);
+            System.out.println("Valor debitado.");
+        } else {
+            System.out.println("Compra cancelada. Efetue a compra novamente.");
         }
     }
 

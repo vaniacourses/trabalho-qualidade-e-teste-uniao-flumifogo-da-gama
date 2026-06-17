@@ -254,4 +254,38 @@ class ContaPoupancaTest {
             verify(bancoMockInstance).setDespesas(rendimentoEsperado);
         }
     }
+
+    @Test
+    @DisplayName("comprar com confirmação (decisao=1) deve debitar o cartão")
+    void testComprar_Confirmado_DeveDebitar() {
+        double saldoAntes = contaPoupanca.getSaldo();
+        contaPoupanca.executarCompra(150.0, 1);
+        assertEquals(saldoAntes - 150.0, contaPoupanca.getSaldo(), 0.001);
+    }
+    @Test
+    @DisplayName("comprar cancelado (decisao=2) não deve alterar saldo")
+    void testComprar_Cancelado_NaoAlteraSaldo() {
+        double saldoAntes = contaPoupanca.getSaldo();
+        contaPoupanca.executarCompra(150.0, 2);
+        assertEquals(saldoAntes, contaPoupanca.getSaldo(), 0.001);
+    }
+
+    @Test
+    @DisplayName("comprar com entrada do usuário (1 - confirmar) deve debitar")
+    void testComprar_ComInput_Confirmado() throws Exception {
+        System.setIn(new java.io.ByteArrayInputStream("1\n".getBytes()));
+        double saldoAntes = contaPoupanca.getSaldo();
+        contaPoupanca.comprar(150.0);
+        assertEquals(saldoAntes - 150.0, contaPoupanca.getSaldo(), 0.001);
+        System.setIn(System.in);
+    }
+    @Test
+    @DisplayName("comprar com entrada do usuário (2 - cancelar) não altera saldo")
+    void testComprar_ComInput_Cancelado() throws Exception {
+        System.setIn(new java.io.ByteArrayInputStream("2\n".getBytes()));
+        double saldoAntes = contaPoupanca.getSaldo();
+        contaPoupanca.comprar(150.0);
+        assertEquals(saldoAntes, contaPoupanca.getSaldo(), 0.001);
+        System.setIn(System.in);
+    }
 }
