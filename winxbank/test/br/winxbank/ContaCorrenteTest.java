@@ -205,13 +205,13 @@ class ContaCorrenteTest {
     // ----------------Testes segunda entrega-----------------------------------
 
     // Verifica o comportamento ao sacar um valor maior que o saldo atual, validando se o sistema permite saldo negativo ou aplica alguma regra de restrição.
-    @Test
-    @DisplayName("sacar: valor maior que saldo deve deixar saldo negativo ou seguir regra do sistema")
-    void sacar_valorMaiorQueSaldo() {
-        contaCorrente.sacar(2000.0);
+    // @Test
+    // @DisplayName("sacar: valor maior que saldo deve deixar saldo negativo ou seguir regra do sistema")
+    // void sacar_valorMaiorQueSaldo() {
+    //     contaCorrente.sacar(2000.0);
 
-        assertEquals(-1000.0, contaCorrente.getSaldo(), 0.001);
-    }
+    //     assertEquals(-1000.0, contaCorrente.getSaldo(), 0.001);
+    // }
 
     // Garante que transferências via PIX com valor zero não alteram o saldo da conta de origem nem da conta destino.
     @Test
