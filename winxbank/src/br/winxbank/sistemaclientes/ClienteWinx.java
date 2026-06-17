@@ -11,7 +11,8 @@ import br.winxbank.sistemabancario.Movimentacao;
 public class ClienteWinx extends Cliente{
 
     private int pontosDeCompra;
-    private final int BONUSDECOMPRA = 3;
+    private static final int BONUS_DE_COMPRA = 3;
+    
 
     /**
      * Construtor padrão do cliente.
@@ -50,7 +51,7 @@ public class ClienteWinx extends Cliente{
      * @param conta
      */
     public void converterPontosEmSaldo(Conta conta){
-        float saldoConvertido = this.pontosDeCompra * this.BONUSDECOMPRA;
+        float saldoConvertido = (float) this.pontosDeCompra * BONUS_DE_COMPRA;
         conta.setSaldo(saldoConvertido);
         this.pontosDeCompra = 0;
         Movimentacao movimentacao = new Movimentacao(saldoConvertido, Movimentacao.TipoDaMovimentacao.ENTRADA);
