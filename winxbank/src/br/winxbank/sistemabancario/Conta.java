@@ -4,12 +4,17 @@ import br.winxbank.geradordedocumentos.ArquivoExtrato;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * @author Natália
  * Esta classe é responsável por representar uma entidade abstrata Conta.
  */
 public abstract class Conta implements OperacoesAutomaticas {
+	
+	private static final Logger logger = Logger.getLogger(Conta.class.getName());
 
     protected int numeroConta;
     protected double saldo;
@@ -20,7 +25,7 @@ public abstract class Conta implements OperacoesAutomaticas {
     /**
      * Construtor padrão da classe conta.
      */
-    public Conta(int numeroConta, double saldo, Cartao cartao, double dividaDeEmprestimo) {
+    protected Conta(int numeroConta, double saldo, Cartao cartao, double dividaDeEmprestimo) {
         this.numeroConta = numeroConta;
         this.saldo = saldo;
         this.cartao = cartao;
@@ -30,7 +35,7 @@ public abstract class Conta implements OperacoesAutomaticas {
     /**
      * Construtor alternativo para leitura de arquivo json.
      */
-    public Conta(int numeroConta, double saldo, Cartao cartao, double dividaDeEmprestimo, ArrayList<Movimentacao> movimentacoes) {
+    protected Conta(int numeroConta, double saldo, Cartao cartao, double dividaDeEmprestimo, List<Movimentacao> movimentacoes) {
         this.numeroConta = numeroConta;
         this.saldo = saldo;
         this.cartao = cartao;
@@ -111,7 +116,7 @@ public abstract class Conta implements OperacoesAutomaticas {
         if (valor > this.saldo) return;
         
         this.saldo -= valor;
-        System.out.println("Você está sacando o valor de: " + valor);
+        logger.log(Level.INFO, "Você está sacando o valor de: {0}", valor);
     }
 
     /**
@@ -145,7 +150,7 @@ public abstract class Conta implements OperacoesAutomaticas {
         return cartao;
     }
 
-    public ArrayList<Movimentacao> getExtrato() {
+    public List<Movimentacao> getExtrato() {
         return extrato;
     }
 
