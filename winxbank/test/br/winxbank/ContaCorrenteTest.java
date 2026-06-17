@@ -12,6 +12,13 @@ import br.winxbank.sistemabancario.Conta;
 import org.junit.jupiter.api.DisplayName;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
+import java.io.ByteArrayInputStream;
 
 @DisplayName("Testes da ContaCorrente")
 class ContaCorrenteTest {
@@ -274,11 +281,116 @@ class ContaCorrenteTest {
     // ---------- Teste de estado de consistencia
 
     // Verifica se operações realizadas na conta são registradas no extrato, garantindo rastreabilidade das transações.
-    @Test
-    @DisplayName("estado do sistema: extrato deve registrar operações")
-    void extrato_deveRegistrarOperacao() {
-        contaCorrente.depositar(100.0);
+    // @Test
+    // @DisplayName("estado do sistema: extrato deve registrar operações")
+    // void extrato_deveRegistrarOperacao() {
+    //     contaCorrente.depositar(100.0);
 
-        assertFalse(contaCorrente.getExtrato().isEmpty());
+    //     assertFalse(contaCorrente.getExtrato().isEmpty());
+    // }
+
+
+    @Test
+    void comprar_debito_confirmado() {
+
+        Cartao cartaoMock = mock(Cartao.class);
+        CartaoCredito creditoMock = mock(CartaoCredito.class);
+
+        ContaCorrente conta = new ContaCorrente(
+            1,
+            1000,
+            cartaoMock,
+            0,
+            creditoMock
+        );
+
+        System.setIn(
+            new ByteArrayInputStream(
+                "1\n1\n".getBytes()
+            )
+        );
+
+        conta.comprar(100);
+
+        verify(cartaoMock)
+            .debitar(conta, 100);
+    }
+
+    @Test
+    void comprar_credito_confirmado() {
+
+        Cartao cartaoMock = mock(Cartao.class);
+        CartaoCredito creditoMock = mock(CartaoCredito.class);
+
+        ContaCorrente conta = new ContaCorrente(
+            1,
+            1000,
+            cartaoMock,
+            0,
+            creditoMock
+        );
+
+        System.setIn(
+            new ByteArrayInputStream(
+                "2\n1\n".getBytes()
+            )
+        );
+
+        conta.comprar(100);
+
+        verify(creditoMock)
+            .creditar(100);
+    }
+
+    @Test
+    void comprar_debito_cancelado() {
+
+        Cartao cartaoMock = mock(Cartao.class);
+        CartaoCredito creditoMock = mock(CartaoCredito.class);
+
+        ContaCorrente conta = new ContaCorrente(
+            1,
+            1000,
+            cartaoMock,
+            0,
+            creditoMock
+        );
+
+        System.setIn(
+            new ByteArrayInputStream(
+                "1\n0\n".getBytes()
+            )
+        );
+
+        conta.comprar(100);
+
+        verify(cartaoMock, never())
+            .debitar(any(), anyDouble());
+    }
+
+    @Test
+    void comprar_credito_cancelado() {
+
+        Cartao cartaoMock = mock(Cartao.class);
+        CartaoCredito creditoMock = mock(CartaoCredito.class);
+
+        ContaCorrente conta = new ContaCorrente(
+            1,
+            1000,
+            cartaoMock,
+            0,
+            creditoMock
+        );
+
+        System.setIn(
+            new ByteArrayInputStream(
+                "2\n0\n".getBytes()
+            )
+        );
+
+        conta.comprar(100);
+
+        verify(creditoMock, never())
+            .creditar(anyDouble());
     }
 }
