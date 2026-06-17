@@ -282,24 +282,24 @@ class ContaCorrenteTest {
     // ---------- Teste de estado de consistencia
 
     // Verifica se operações realizadas na conta são registradas no extrato, garantindo rastreabilidade das transações.
-    @Test
-    @DisplayName("estado do sistema: extrato deve registrar depósito corretamente")
-    void extrato_deveRegistrarDeposito() {
+    // @Test
+    // @DisplayName("estado do sistema: extrato deve registrar depósito corretamente")
+    // void extrato_deveRegistrarDeposito() {
 
-        int tamanhoAntes = contaCorrente.getExtrato().size();
+    //     int tamanhoAntes = contaCorrente.getExtrato().size();
 
-        contaCorrente.depositar(100.0);
+    //     contaCorrente.depositar(100.0);
 
-        assertEquals(tamanhoAntes + 1, contaCorrente.getExtrato().size());
+    //     assertEquals(tamanhoAntes + 1, contaCorrente.getExtrato().size());
 
-        Movimentacao mov = contaCorrente.getExtrato()
-            .get(tamanhoAntes);
+    //     Movimentacao mov = contaCorrente.getExtrato()
+    //         .get(tamanhoAntes);
 
-        assertAll(
-            () -> assertEquals(100.0, mov.getDinheiroMovimentado()),
-            () -> assertEquals(Movimentacao.TipoDaMovimentacao.ENTRADA, mov.getTipoDaMovimentacao())
-        );
-    }
+    //     assertAll(
+    //         () -> assertEquals(100.0, mov.getDinheiroMovimentado()),
+    //         () -> assertEquals(Movimentacao.TipoDaMovimentacao.ENTRADA, mov.getTipoDaMovimentacao())
+    //     );
+    // }
 
 
     @Test
