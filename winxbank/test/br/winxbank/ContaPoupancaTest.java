@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import br.winxbank.geradordedocumentos.ArquivoInformeRendimento;
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -193,6 +194,64 @@ class ContaPoupancaTest {
             contaPoupanca.acrescentarRendimento();
             contaPoupanca.acrescentarRendimento();
             assertEquals(3, contaPoupanca.getInformeRendimento().size());
+        }
+    }
+
+    @Test
+    @DisplayName("acrescentarRendimento com saldo ZERO não deve chamar Banco")
+    void testAcrescentarRendimento_NaoDeveChamarBanco_QuandoSaldoZero() {
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            Banco bancoMockInstance = mock(Banco.class);
+            bancoMock.when(Banco::getInstancia).thenReturn(bancoMockInstance);
+            ContaPoupanca contaZero = new ContaPoupanca(5003, 0.0, cartao, 0.0);
+            contaZero.acrescentarRendimento();
+            verify(bancoMockInstance, never()).setDespesas(anyDouble());
+        }
+    }
+
+    @Test
+    @DisplayName("acrescentarRendimento com saldo NEGATIVO não deve chamar Banco")
+    void testAcrescentarRendimento_NaoDeveChamarBanco_QuandoSaldoNegativo() {
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            Banco bancoMockInstance = mock(Banco.class);
+            bancoMock.when(Banco::getInstancia).thenReturn(bancoMockInstance);
+            ContaPoupanca contaNegativa = new ContaPoupanca(5006, -500.0, cartao, 0.0);
+            contaNegativa.acrescentarRendimento();
+            verify(bancoMockInstance, never()).setDespesas(anyDouble());
+        }
+    }
+
+    @Test
+    @DisplayName("gerarInformeRendimento: deve chamar ArquivoInformeRendimento")
+    void testGerarInformeRendimento_DeveChamarArquivo() throws Exception {
+        try (MockedStatic<ArquivoInformeRendimento> arquivoMock = mockStatic(ArquivoInformeRendimento.class)) {
+            ArquivoInformeRendimento arquivoMockInstance = mock(ArquivoInformeRendimento.class);
+            arquivoMock.when(ArquivoInformeRendimento::getInstancia).thenReturn(arquivoMockInstance);
+            contaPoupanca.gerarInformeRendimento();
+            verify(arquivoMockInstance).gerarDocumento(contaPoupanca);
+        }
+    }
+
+    @Test
+    @DisplayName("acrescentarRendimento com saldo ZERO não deve registrar no informe")
+    void testAcrescentarRendimento_NaoDeveRegistrarMovimentacao_QuandoSaldoZero() {
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            bancoMock.when(Banco::getInstancia).thenReturn(mock(Banco.class));
+            ContaPoupanca contaZero = new ContaPoupanca(5003, 0.0, cartao, 0.0);
+            contaZero.acrescentarRendimento();
+            assertTrue(contaZero.getInformeRendimento().isEmpty());
+        }
+    }
+
+    @Test
+    @DisplayName("acrescentarRendimento com saldo válido deve chamar movimentacaoBancaria")
+    void testAcrescentarRendimento_DeveChamarMovimentacaoBancaria() {
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            Banco bancoMockInstance = mock(Banco.class);
+            bancoMock.when(Banco::getInstancia).thenReturn(bancoMockInstance);
+            contaPoupanca.acrescentarRendimento();
+            double rendimentoEsperado = SALDO_INICIAL / RENDIMENTO_MENSAL;
+            verify(bancoMockInstance).setDespesas(rendimentoEsperado);
         }
     }
 }
