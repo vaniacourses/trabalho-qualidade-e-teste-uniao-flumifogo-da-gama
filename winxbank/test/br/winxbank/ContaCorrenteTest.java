@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import br.winxbank.sistemabancario.ContaCorrente;
+import br.winxbank.sistemabancario.Movimentacao;
 import br.winxbank.sistemabancario.Banco;
 import br.winxbank.sistemabancario.Cartao;
 import br.winxbank.sistemabancario.CartaoCredito;
@@ -281,13 +282,24 @@ class ContaCorrenteTest {
     // ---------- Teste de estado de consistencia
 
     // Verifica se operações realizadas na conta são registradas no extrato, garantindo rastreabilidade das transações.
-    // @Test
-    // @DisplayName("estado do sistema: extrato deve registrar operações")
-    // void extrato_deveRegistrarOperacao() {
-    //     contaCorrente.depositar(100.0);
+    @Test
+    @DisplayName("estado do sistema: extrato deve registrar depósito corretamente")
+    void extrato_deveRegistrarDeposito() {
 
-    //     assertFalse(contaCorrente.getExtrato().isEmpty());
-    // }
+        int tamanhoAntes = contaCorrente.getExtrato().size();
+
+        contaCorrente.depositar(100.0);
+
+        assertEquals(tamanhoAntes + 1, contaCorrente.getExtrato().size());
+
+        Movimentacao mov = contaCorrente.getExtrato()
+            .get(tamanhoAntes);
+
+        assertAll(
+            () -> assertEquals(100.0, mov.getDinheiroMovimentado()),
+            () -> assertEquals(Movimentacao.TipoDaMovimentacao.ENTRADA, mov.getTipoDaMovimentacao())
+        );
+    }
 
 
     @Test

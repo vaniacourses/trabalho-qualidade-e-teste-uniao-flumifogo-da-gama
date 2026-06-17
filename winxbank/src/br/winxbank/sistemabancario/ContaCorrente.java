@@ -1,5 +1,6 @@
 package br.winxbank.sistemabancario;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /**
  * @author Dani
@@ -8,6 +9,7 @@ import java.util.Scanner;
 public class ContaCorrente extends Conta implements OperacoesAutomaticas{
 
     private CartaoCredito cartaoCredito;
+    private static final Logger logger = Logger.getLogger(ContaCorrente.class.getName());
 
     /**
      * Construtor padrão da classe conta.
@@ -58,8 +60,7 @@ public class ContaCorrente extends Conta implements OperacoesAutomaticas{
     }
 
     public String getTipoDaConta() {
-        String tipoDaConta = "Corrente";
-        return tipoDaConta;
+        return "Corrente";
     }
 
     /**
@@ -69,34 +70,37 @@ public class ContaCorrente extends Conta implements OperacoesAutomaticas{
     @Override
     public void comprar(double valor) {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Você deseja pagar no debito ou no credito? 1 (debito) ou 2 (credito)");
+        logger.info("Você deseja pagar no debito ou no credito? 1 (debito) ou 2 (credito)");
         int decisao = sc.nextInt();
+        String divisoria = "------------------------------------------------";
         if (decisao == 1){
-            System.out.println("------------------------------------------------");
-            System.out.println(this.cartao.getNumero() + "\n" + this.cartao.csv);
-            System.out.println("------------------------------------------------");
-            System.out.println("Este e o cartao que deseja utilizar? Digite 1 (confirmar)");
+            logger.info(divisoria);
+            String dadosCartao = this.cartao.getNumero() + "\n" + this.cartao.csv;
+            logger.info(dadosCartao);
+            logger.info(divisoria);
+            logger.info("Este e o cartao que deseja utilizar? Digite 1 (confirmar)");
             int decisao2 = sc.nextInt();
             if(decisao2 == 1){
                 cartao.debitar(this, valor);
-                System.out.println("Valor debitado.");
+                logger.info("Valor debitado.");
             }
             else{
-                System.out.println("Compra cancelada. Efetue a compra novamente.");
+                logger.warning("Compra cancelada. Efetue a compra novamente.");
             }
         }
         else if(decisao == 2){
-            System.out.println("------------------------------------------------");
-            System.out.println(this.cartaoCredito.getNumero() + "\n" + this.cartaoCredito.csv);
-            System.out.println("------------------------------------------------");
-            System.out.println("Este e o cartao que deseja utilizar? Digite 1 (confirmar)");
+            logger.info(divisoria);
+            String dadosCartaoCredito = this.cartaoCredito.getNumero() + "\n" + this.cartaoCredito.csv;
+            logger.info(dadosCartaoCredito);
+            logger.info(divisoria);
+            logger.info("Este e o cartao que deseja utilizar? Digite 1 (confirmar)");
             int decisao2 = sc.nextInt();
             if(decisao2 == 1){
                 this.cartaoCredito.creditar(valor);
-                System.out.println("Valor creditado.");
+                logger.info("Valor creditado.");
             }
             else{
-                System.out.println("Compra cancelada. Efetue a compra novamente.");
+                logger.warning("Compra cancelada. Efetue a compra novamente.");
             }
         }
     }
