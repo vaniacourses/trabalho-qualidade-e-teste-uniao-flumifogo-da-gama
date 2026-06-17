@@ -7,6 +7,9 @@ import br.winxbank.sistemabancario.Movimentacao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import br.winxbank.geradordedocumentos.ArquivoInformeRendimento;
+import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,8 +28,6 @@ class ContaPoupancaTest {
 
     @BeforeEach
     void setUp() {
-        Banco.getInstancia().receitas = 0;
-        Banco.getInstancia().despesas = 0;
         cartao = new Cartao(NUMERO_CARTAO, CSV);
         contaPoupanca = new ContaPoupanca(NUMERO_CONTA, SALDO_INICIAL, cartao, DIVIDA);
     }
@@ -34,23 +35,27 @@ class ContaPoupancaTest {
     @Test
     @DisplayName("acrescentarRendimento: deve aumentar o saldo")
     void testAcrescentarRendimento_DeveAumentarSaldo() {
-        double saldoAntes = contaPoupanca.getSaldo();
-        contaPoupanca.acrescentarRendimento();
-
-        double saldoEsperado = saldoAntes + (saldoAntes / RENDIMENTO_MENSAL);
-        assertEquals(saldoEsperado, contaPoupanca.getSaldo(), 0.001);
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            bancoMock.when(Banco::getInstancia).thenReturn(mock(Banco.class));
+            double saldoAntes = contaPoupanca.getSaldo();
+            contaPoupanca.acrescentarRendimento();
+            double saldoEsperado = saldoAntes + (saldoAntes / RENDIMENTO_MENSAL);
+            assertEquals(saldoEsperado, contaPoupanca.getSaldo(), 0.001);
+        }
     }
 
     @Test
     @DisplayName("acrescentarRendimento: deve criar movimentação de tipo ENTRADA")
     void testAcrescentarRendimento_DeveRegistrarMovimentacao() {
-        contaPoupanca.acrescentarRendimento();
-
-        assertEquals(1, contaPoupanca.getInformeRendimento().size());
-        assertEquals(
-            Movimentacao.TipoDaMovimentacao.ENTRADA,
-            contaPoupanca.getInformeRendimento().get(0).getTipoDaMovimentacao()
-        );
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            bancoMock.when(Banco::getInstancia).thenReturn(mock(Banco.class));
+            contaPoupanca.acrescentarRendimento();
+            assertEquals(1, contaPoupanca.getInformeRendimento().size());
+            assertEquals(
+                    Movimentacao.TipoDaMovimentacao.ENTRADA,
+                    contaPoupanca.getInformeRendimento().get(0).getTipoDaMovimentacao()
+            );
+        }
     }
 
     @Test
@@ -85,10 +90,12 @@ class ContaPoupancaTest {
     @Test
     @DisplayName("movimentacaoBancaria: deve registrar despesas no banco")
     void testMovimentacaoBancaria_DeveRegistrarDespesas() {
-        double despesasAntes = Banco.getInstancia().getDespesas();
-        contaPoupanca.movimentacaoBancaria(100.0);
-
-        assertEquals(despesasAntes + 100.0, Banco.getInstancia().getDespesas(), 0.001);
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            Banco bancoMockInstance = mock(Banco.class);
+            bancoMock.when(Banco::getInstancia).thenReturn(bancoMockInstance);
+            contaPoupanca.movimentacaoBancaria(100.0);
+            verify(bancoMockInstance).setDespesas(100.0);
+        }
     }
 
     @Test
@@ -103,13 +110,14 @@ class ContaPoupancaTest {
     @Test
     @DisplayName("BORDA - acrescentarRendimento com saldo MUITO GRANDE")
     void testBorda_AcrescentarRendimento_SaldoGrande() {
-        ContaPoupanca contaGrande = new ContaPoupanca(5004, 1000000.0, cartao, 0.0);
-        double saldoAntes = contaGrande.getSaldo();
-
-        contaGrande.acrescentarRendimento();
-
-        double saldoEsperado = saldoAntes + (saldoAntes / RENDIMENTO_MENSAL);
-        assertEquals(saldoEsperado, contaGrande.getSaldo(), 0.001);
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            bancoMock.when(Banco::getInstancia).thenReturn(mock(Banco.class));
+            ContaPoupanca contaGrande = new ContaPoupanca(5004, 1000000.0, cartao, 0.0);
+            double saldoAntes = contaGrande.getSaldo();
+            contaGrande.acrescentarRendimento();
+            double saldoEsperado = saldoAntes + (saldoAntes / RENDIMENTO_MENSAL);
+            assertEquals(saldoEsperado, contaGrande.getSaldo(), 0.001);
+        }
     }
 
     @Test
@@ -128,22 +136,23 @@ class ContaPoupancaTest {
     @Test
     @DisplayName("BORDA - movimentacaoBancaria com valor ZERO")
     void testBorda_MovimentacaoBancaria_ValorZero() {
-        double despesasAntes = Banco.getInstancia().getDespesas();
-        contaPoupanca.movimentacaoBancaria(0.0);
-
-        assertEquals(despesasAntes, Banco.getInstancia().getDespesas(), 0.001);
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            Banco bancoMockInstance = mock(Banco.class);
+            bancoMock.when(Banco::getInstancia).thenReturn(bancoMockInstance);
+            contaPoupanca.movimentacaoBancaria(0.0);
+            verify(bancoMockInstance).setDespesas(0.0);
+        }
     }
 
     @Test
-    @DisplayName("movimentacaoBancaria com valor NEGATIVO")
+    @DisplayName("movimentacaoBancaria com valor NEGATIVO (validação no Banco)")
     void testValidacao_MovimentacaoBancaria_ValorNegativo() {
-        double despesasAntes = Banco.getInstancia().getDespesas();
-
-        contaPoupanca.movimentacaoBancaria(-100.0);
-
-        // Valor negativo não deveria ser aceito
-        assertEquals(despesasAntes, Banco.getInstancia().getDespesas(),
-                "Movimento negativo não deveria alterar despesas!");
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            Banco bancoMockInstance = mock(Banco.class);
+            bancoMock.when(Banco::getInstancia).thenReturn(bancoMockInstance);
+            contaPoupanca.movimentacaoBancaria(-100.0);
+            verify(bancoMockInstance).setDespesas(-100.0);
+        }
     }
 
     @Test
@@ -163,20 +172,86 @@ class ContaPoupancaTest {
     @Test
     @DisplayName("Múltiplas chamadas acumulam despesas")
     void testBorda_MultiplosAcumuloDespesas() {
-        contaPoupanca.movimentacaoBancaria(50.0);
-        contaPoupanca.movimentacaoBancaria(75.0);
-        contaPoupanca.movimentacaoBancaria(100.0);
-
-        assertEquals(225.0, Banco.getInstancia().getDespesas(), 0.001);
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            Banco bancoMockInstance = mock(Banco.class);
+            bancoMock.when(Banco::getInstancia).thenReturn(bancoMockInstance);
+            contaPoupanca.movimentacaoBancaria(50.0);
+            contaPoupanca.movimentacaoBancaria(75.0);
+            contaPoupanca.movimentacaoBancaria(100.0);
+            verify(bancoMockInstance, times(3)).setDespesas(anyDouble());
+            verify(bancoMockInstance).setDespesas(50.0);
+            verify(bancoMockInstance).setDespesas(75.0);
+            verify(bancoMockInstance).setDespesas(100.0);
+        }
     }
 
     @Test
     @DisplayName("AcrescentarRendimento consecutivos")
     void testBorda_AcrescentarRendimentoConsecutivos() {
-        contaPoupanca.acrescentarRendimento();
-        contaPoupanca.acrescentarRendimento();
-        contaPoupanca.acrescentarRendimento();
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            bancoMock.when(Banco::getInstancia).thenReturn(mock(Banco.class));
+            contaPoupanca.acrescentarRendimento();
+            contaPoupanca.acrescentarRendimento();
+            contaPoupanca.acrescentarRendimento();
+            assertEquals(3, contaPoupanca.getInformeRendimento().size());
+        }
+    }
 
-        assertEquals(3, contaPoupanca.getInformeRendimento().size());
+    @Test
+    @DisplayName("acrescentarRendimento com saldo ZERO não deve chamar Banco")
+    void testAcrescentarRendimento_NaoDeveChamarBanco_QuandoSaldoZero() {
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            Banco bancoMockInstance = mock(Banco.class);
+            bancoMock.when(Banco::getInstancia).thenReturn(bancoMockInstance);
+            ContaPoupanca contaZero = new ContaPoupanca(5003, 0.0, cartao, 0.0);
+            contaZero.acrescentarRendimento();
+            verify(bancoMockInstance, never()).setDespesas(anyDouble());
+        }
+    }
+
+    @Test
+    @DisplayName("acrescentarRendimento com saldo NEGATIVO não deve chamar Banco")
+    void testAcrescentarRendimento_NaoDeveChamarBanco_QuandoSaldoNegativo() {
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            Banco bancoMockInstance = mock(Banco.class);
+            bancoMock.when(Banco::getInstancia).thenReturn(bancoMockInstance);
+            ContaPoupanca contaNegativa = new ContaPoupanca(5006, -500.0, cartao, 0.0);
+            contaNegativa.acrescentarRendimento();
+            verify(bancoMockInstance, never()).setDespesas(anyDouble());
+        }
+    }
+
+    @Test
+    @DisplayName("gerarInformeRendimento: deve chamar ArquivoInformeRendimento")
+    void testGerarInformeRendimento_DeveChamarArquivo() throws Exception {
+        try (MockedStatic<ArquivoInformeRendimento> arquivoMock = mockStatic(ArquivoInformeRendimento.class)) {
+            ArquivoInformeRendimento arquivoMockInstance = mock(ArquivoInformeRendimento.class);
+            arquivoMock.when(ArquivoInformeRendimento::getInstancia).thenReturn(arquivoMockInstance);
+            contaPoupanca.gerarInformeRendimento();
+            verify(arquivoMockInstance).gerarDocumento(contaPoupanca);
+        }
+    }
+
+    @Test
+    @DisplayName("acrescentarRendimento com saldo ZERO não deve registrar no informe")
+    void testAcrescentarRendimento_NaoDeveRegistrarMovimentacao_QuandoSaldoZero() {
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            bancoMock.when(Banco::getInstancia).thenReturn(mock(Banco.class));
+            ContaPoupanca contaZero = new ContaPoupanca(5003, 0.0, cartao, 0.0);
+            contaZero.acrescentarRendimento();
+            assertTrue(contaZero.getInformeRendimento().isEmpty());
+        }
+    }
+
+    @Test
+    @DisplayName("acrescentarRendimento com saldo válido deve chamar movimentacaoBancaria")
+    void testAcrescentarRendimento_DeveChamarMovimentacaoBancaria() {
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            Banco bancoMockInstance = mock(Banco.class);
+            bancoMock.when(Banco::getInstancia).thenReturn(bancoMockInstance);
+            contaPoupanca.acrescentarRendimento();
+            double rendimentoEsperado = SALDO_INICIAL / RENDIMENTO_MENSAL;
+            verify(bancoMockInstance).setDespesas(rendimentoEsperado);
+        }
     }
 }

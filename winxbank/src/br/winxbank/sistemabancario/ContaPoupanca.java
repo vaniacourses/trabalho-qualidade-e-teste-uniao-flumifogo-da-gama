@@ -47,6 +47,9 @@ public class ContaPoupanca extends Conta implements OperacoesAutomaticas{
     }
 
     public void setInformeRendimento(Movimentacao movimentacao){
+        if(movimentacao == null) {
+            throw new IllegalArgumentException("Movimentação não pode ser nula");
+        }
         informeRendimento.add(movimentacao);
     }
 
@@ -58,6 +61,7 @@ public class ContaPoupanca extends Conta implements OperacoesAutomaticas{
      * Método responsável por acrescentar rendimento sobre o saldo contido nesta conta.
      */
     public void acrescentarRendimento(){
+        if(this.saldo <= 0) return;
         double rendimentoDesteCaso = this.saldo / rendimentoMensalPoupanca;
         Movimentacao movimentacao = new Movimentacao(rendimentoDesteCaso-this.saldo, Movimentacao.TipoDaMovimentacao.ENTRADA);
         this.setInformeRendimento(movimentacao);
