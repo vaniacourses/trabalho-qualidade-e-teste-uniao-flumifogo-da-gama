@@ -288,4 +288,48 @@ class ContaPoupancaTest {
         assertEquals(saldoAntes, contaPoupanca.getSaldo(), 0.001);
         System.setIn(System.in);
     }
+
+    @Test
+    @DisplayName("acrescentarRendimento: movimentacao deve ter valor correto (diferença rendimento - saldo)")
+    void testAcrescentarRendimento_ValorMovimentacaoCorreto() {
+        try (MockedStatic<Banco> bancoMock = mockStatic(Banco.class)) {
+            bancoMock.when(Banco::getInstancia).thenReturn(mock(Banco.class));
+            contaPoupanca.acrescentarRendimento();
+            double rendimentoEsperado = SALDO_INICIAL / RENDIMENTO_MENSAL;
+            double valorMovimentacaoEsperado = rendimentoEsperado - SALDO_INICIAL;
+            assertEquals(valorMovimentacaoEsperado,
+                    contaPoupanca.getInformeRendimento().get(0).getDinheiroMovimentado(), 0.001);
+        }
+    }
+
+    @Test
+    @DisplayName("comprar confirmado deve imprimir mensagem de débito")
+    void testComprar_ComInput_ImprimeMensagemDebito() throws Exception {
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+        try {
+            System.setIn(new java.io.ByteArrayInputStream("1\n".getBytes()));
+            contaPoupanca.comprar(150.0);
+            assertTrue(outContent.toString().contains("A conta sera debitada..."));
+            assertTrue(outContent.toString().contains(String.valueOf(cartao.getNumero())));
+            assertTrue(outContent.toString().contains("Valor debitado."));
+        } finally {
+            System.setOut(System.out);
+        }
+    }
+    @Test
+    @DisplayName("comprar cancelado deve imprimir mensagem de cancelamento")
+    void testComprar_ComInput_ImprimeMensagemCancelamento() throws Exception {
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+        try {
+            System.setIn(new java.io.ByteArrayInputStream("2\n".getBytes()));
+            contaPoupanca.comprar(150.0);
+            assertTrue(outContent.toString().contains("A conta sera debitada..."));
+            assertTrue(outContent.toString().contains(String.valueOf(cartao.getNumero())));
+            assertTrue(outContent.toString().contains("Compra cancelada."));
+        } finally {
+            System.setOut(System.out);
+        }
+    }
 }
