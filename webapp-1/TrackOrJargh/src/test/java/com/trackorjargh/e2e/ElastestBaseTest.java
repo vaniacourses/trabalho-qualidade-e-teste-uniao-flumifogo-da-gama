@@ -7,7 +7,6 @@ import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +15,8 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 public class ElastestBaseTest {
     protected static final Logger logger = LoggerFactory
@@ -67,26 +68,37 @@ public class ElastestBaseTest {
 
         if (eusURL == null) {
             if (browserType == null || browserType.equals(CHROME)) {
-                driver = new ChromeDriver();
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments("--no-sandbox");
+                options.addArguments("--disable-dev-shm-usage");
+                options.addArguments("--remote-allow-origins=*");
+                options.addArguments("--disable-gpu");
+                driver = new ChromeDriver(options);
             } else {
-                driver = new FirefoxDriver();
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                firefoxOptions.addArguments("--no-sandbox");
+                driver = new FirefoxDriver(firefoxOptions);
             }
         } else {
-            DesiredCapabilities caps;
-            if (browserType == null || browserType.equals(CHROME)) {
-                caps = DesiredCapabilities.chrome();
-            } else {
-                caps = DesiredCapabilities.firefox();
-            }
-
             browserVersion = System.getProperty("browserVersion");
-            if (browserVersion != null) {
-                logger.info("Browser Version: {}", browserVersion);
-                caps.setVersion(browserVersion);
-            }
 
-            caps.setCapability("testName", testName);
-            driver = new RemoteWebDriver(new URL(eusURL), caps);
+            if (browserType == null || browserType.equals(CHROME)) {
+                ChromeOptions remoteOptions = new ChromeOptions();
+                if (browserVersion != null) {
+                    logger.info("Browser Version: {}", browserVersion);
+                    remoteOptions.setCapability("browserVersion", browserVersion);
+                }
+                remoteOptions.setCapability("testName", testName);
+                driver = new RemoteWebDriver(new URL(eusURL), remoteOptions);
+            } else {
+                FirefoxOptions remoteOptions = new FirefoxOptions();
+                if (browserVersion != null) {
+                    logger.info("Browser Version: {}", browserVersion);
+                    remoteOptions.setCapability("browserVersion", browserVersion);
+                }
+                remoteOptions.setCapability("testName", testName);
+                driver = new RemoteWebDriver(new URL(eusURL), remoteOptions);
+            }
         }
 
         driver.get(sutUrl);

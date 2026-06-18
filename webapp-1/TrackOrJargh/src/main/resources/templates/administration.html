@@ -58,7 +58,7 @@
 				<form action="/adminUsuario" method="post">
 					<div class="form-group pt-3">
 						<label for="deleteUser">Eliminar usuario</label> <input type="checkbox"
-							class="form-check-input ml-2" name="confirmDelete" value="false"> <br> <label
+							class="form-check-input ml-2" name="confirmDelete" value="true"> <br> <label
 							for="user">Usuario a modificar:</label> <input type="text" class="form-control" id="user"
 							placeholder="Usuario a modificar" name="name" value="{{user.name}}" readonly> <label
 							for="email">Correo electrónico</label> <input type="email" class="form-control"
@@ -93,7 +93,7 @@
 					<label for="film">Película a modificar:</label> <input type="text" class="form-control"
 						id="film" placeholder="Película a modificar" name="name" value="{{film.name}}" readonly>
 					<label for="deleteFilm">Eliminar película</label><input type="checkbox"
-						class="form-check-input ml-2" name="confirmDelete">
+						class="form-check-input ml-2" name="confirmDelete" value="true">
 					<div class="form-group pt-3">
 						<label for="imageFilm">Cambiar imagen:</label> <input type="file" id="imageFilm"
 							name="imageFilm"> <br> <label for="name">Modificar nombre</label> <input
@@ -134,7 +134,7 @@
 					<label for="show">Película a modificar:</label> <input type="text" class="form-control"
 						id="show" placeholder="Serie a modificar" name="name" value="{{show.name}}" readonly>
 					<label for="deleteFilm">Eliminar serie</label><input type="checkbox"
-						class="form-check-input ml-2" name="confirmDelete">
+						class="form-check-input ml-2" name="confirmDelete" value="true">
 					<div class="form-group pt-3">
 						<label for="imageShow">Cambiar imagen:</label> <input type="file" id="imageShow"
 							name="imageShow"> <br> <label for="name">Modificar nombre</label> <input
@@ -175,7 +175,7 @@
 					<label for="book">Libro a modificar:</label> <input type="text" class="form-control" id="book"
 						placeholder="Libro a modificar" name="name" value="{{book.name}}" readonly> <label
 						for="deleteBook">Eliminar Libro</label><input type="checkbox" class="form-check-input ml-2"
-						name="confirmDelete">
+						name="confirmDelete" value="true">
 					<div class="form-group pt-3">
 						<label for="imageBook">Cambiar imagen:</label> <input type="file" id="imageBook"
 							name="imageBook"> <br> <label for="name">Modificar nombre</label> <input

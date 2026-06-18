@@ -28,10 +28,9 @@
 		<!-- Test dependencies version -->
 		<junit.version>4.10</junit.version>
 		<junit.jupiter.version>5.4.0</junit.jupiter.version>
-		<selenium.jupiter>3.1.1</selenium.jupiter>
-		<webdrivermanager.version>3.3.0</webdrivermanager.version>
+		<webdrivermanager.version>5.9.2</webdrivermanager.version>
 		<junit.platform.version>1.0.0</junit.platform.version>
-		<selenium.version>3.11.0</selenium.version>
+		<selenium.version>4.27.0</selenium.version>
 	</properties>
 
 	<!-- SpringBoot Tests Junit 5 -->
@@ -120,13 +119,6 @@
 
 		<dependency>
 			<groupId>io.github.bonigarcia</groupId>
-			<artifactId>selenium-jupiter</artifactId>
-			<version>${selenium.jupiter}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>io.github.bonigarcia</groupId>
 			<artifactId>webdrivermanager</artifactId>
 			<version>${webdrivermanager.version}</version>
 			<scope>test</scope>
@@ -192,6 +184,20 @@
 			<groupId>com.github.sbrannen</groupId>
 			<artifactId>spring-test-junit5</artifactId>
 			<version>1.4.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.13</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.12.0</version>
 			<scope>test</scope>
 		</dependency>
 

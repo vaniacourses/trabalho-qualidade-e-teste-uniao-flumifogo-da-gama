@@ -4,10 +4,10 @@ import static java.lang.invoke.MethodHandles.lookup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -16,9 +16,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 
-import io.github.bonigarcia.seljup.SeleniumExtension;
-
-@ExtendWith(SeleniumExtension.class)
 public class TestE2EFront extends ElastestBaseTest {
 
 	final static Logger log = getLogger(lookup().lookupClass());
@@ -85,7 +82,7 @@ public class TestE2EFront extends ElastestBaseTest {
 	}
 
 	public void waitUntil(ExpectedCondition<WebElement> expectedCondition, String errorMessage, int seconds) {
-		WebDriverWait waiter = new WebDriverWait(driver, seconds);
+		WebDriverWait waiter = new WebDriverWait(driver, Duration.ofSeconds(seconds));
 
 		try {
 			waiter.until(expectedCondition);
