@@ -39,7 +39,6 @@ public class TestE2EAdminCreateDelete extends TestE2EBase {
         waitUntil(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#books.tab-pane.active")),
                 "Books tab not active in upload page", 3);
 
-        JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("document.querySelector('#books input[type=file]').removeAttribute('required');");
 
         WebElement nameInput = driver.findElement(By.cssSelector("#books input[name='newName']"));

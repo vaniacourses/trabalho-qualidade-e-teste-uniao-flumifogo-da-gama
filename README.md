@@ -9,7 +9,7 @@ O projeto continua dividido em dois sistemas com abordagens de qualidade distint
 
 * **Avaliação de Qualidade (ISO 25010):** [[Documento](https://docs.google.com/document/d/1Hy3M7kfq1z5C7sG1zR2PlqwsO_UjCIY6E0erjkjWPTo/edit?tab=t.0#heading=h.u4t64fhy3m02)]
 * **Relatório de Resultados (Testes, Cobertura, Mutação e SonarQube):** [[Documento](https://docs.google.com/document/d/1yEef11D-6ugCnXzZRFyFjp-3QiBtWCAQXwihWo8W1Is/edit?tab=t.0)]
-* **Relatório de Testes de Sistema (E2E e Não Funcionais):** [Insira o link do Google Docs aqui]
+* **Relatório de Testes de Sistema (E2E e Não Funcionais):** [[Documento](https://docs.google.com/document/d/1LADbjCzQ6Il2_aK1_TE_7EpqB7UiFNsD0aATMaqzZVM/edit?usp=sharing)]
 
 ---
 
@@ -38,3 +38,5 @@ Aplicação web para avaliação de mídias (Spring Boot + Angular). Nesta entre
 * **Testes Não Funcionais:** Avaliação prática de atributos específicos de qualidade, como testes de carga/desempenho ou validação de segurança da aplicação web.
 
 * ### Como Executar os Testes E2E
+- mvn test => executa todos os testes
+- mvn test -Dtest=<teste-especifico> => executa um teste específico
