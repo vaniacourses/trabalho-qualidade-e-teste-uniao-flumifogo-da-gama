@@ -1,0 +1,371 @@
+{
+  "info": {
+    "_postman_id": "679c25fd-f8df-425d-9266-33ad68d2242f",
+    "name": "webapp-1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39934362"
+  },
+  "item": [
+    {
+      "name": "Listar filmes",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// ==========================================\r",
+              "// 1. VERIFICAÇÕES DE STATUS E PERFORMANCE\r",
+              "// ==========================================\r",
+              "pm.test(\"Status code é 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Tempo de resposta aceitável (< 800ms)\", function () {\r",
+              "    // Ajuste este valor dependendo da exigência do seu projeto\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(800); \r",
+              "});\r",
+              "\r",
+              "// ==========================================\r",
+              "// 2. VERIFICAÇÕES DE ESTRUTURA (CONTRATO)\r",
+              "// ==========================================\r",
+              "const jsonData = pm.response.json();\r",
+              "\r",
+              "pm.test(\"O corpo da resposta contém toda a estrutura de paginação esperada\", function () {\r",
+              "    pm.expect(jsonData).to.be.an('object');\r",
+              "    pm.expect(jsonData).to.have.property('content').that.is.an('array');\r",
+              "    pm.expect(jsonData).to.have.property('last').that.is.a('boolean');\r",
+              "    pm.expect(jsonData).to.have.property('totalElements').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('totalPages').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('size').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('number').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('first').that.is.a('boolean');\r",
+              "    pm.expect(jsonData).to.have.property('numberOfElements').that.is.a('number');\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Se houver filmes no 'content', os atributos obrigatórios estão presentes\", function() {\r",
+              "    if (jsonData.content.length > 0) {\r",
+              "        let filmeAmostra = jsonData.content[0];\r",
+              "        pm.expect(filmeAmostra).to.have.property('id').that.is.a('number');\r",
+              "        pm.expect(filmeAmostra).to.have.property('name').that.is.a('string');\r",
+              "        pm.expect(filmeAmostra).to.have.property('directors').that.is.a('string');\r",
+              "        pm.expect(filmeAmostra).to.have.property('genders').that.is.an('array');\r",
+              "    }\r",
+              "});\r",
+              "\r",
+              "// ==========================================\r",
+              "// 3. VERIFICAÇÕES DE LÓGICA E REGRAS DE NEGÓCIO\r",
+              "// ==========================================\r",
+              "pm.test(\"Integridade dos dados: o tamanho do 'content' corresponde ao 'numberOfElements'\", function () {\r",
+              "    pm.expect(jsonData.content.length).to.eql(jsonData.numberOfElements);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"A página e o tamanho retornados refletem os parâmetros enviados na URL\", function () {\r",
+              "    // Tenta capturar os parâmetros da URL. Se não existirem, assume os defaults prováveis do backend\r",
+              "    let queryPage = pm.request.url.query.get(\"page\");\r",
+              "    let querySize = pm.request.url.query.get(\"size\");\r",
+              "    \r",
+              "    let expectedPage = queryPage !== undefined ? parseInt(queryPage) : 0;\r",
+              "    let expectedSize = querySize !== undefined ? parseInt(querySize) : 5;\r",
+              "    \r",
+              "    pm.expect(jsonData.number).to.eql(expectedPage, \"O número da página não confere com a URL.\");\r",
+              "    pm.expect(jsonData.size).to.eql(expectedSize, \"O limite (size) não confere com a URL.\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Consistência das flags booleanas de navegação ('first' e 'last')\", function () {\r",
+              "    // Validação da flag 'first'\r",
+              "    if (jsonData.number === 0) {\r",
+              "        pm.expect(jsonData.first, \"Deveria ser a primeira página (first = true)\").to.be.true;\r",
+              "    } else {\r",
+              "        pm.expect(jsonData.first, \"Não deveria ser a primeira página (first = false)\").to.be.false;\r",
+              "    }\r",
+              "\r",
+              "    // Validação da flag 'last'\r",
+              "    if (jsonData.totalPages > 0 && jsonData.number === (jsonData.totalPages - 1)) {\r",
+              "        pm.expect(jsonData.last, \"Deveria ser a última página (last = true)\").to.be.true;\r",
+              "    } else if (jsonData.totalPages > 0) {\r",
+              "        pm.expect(jsonData.last, \"Não deveria ser a última página (last = false)\").to.be.false;\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/peliculas?page=0&size=5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "peliculas"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "5"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar séries",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// ==========================================\r",
+              "// 1. VERIFICAÇÕES DE STATUS E PERFORMANCE\r",
+              "// ==========================================\r",
+              "pm.test(\"Status code é 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Tempo de resposta aceitável (< 800ms)\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(800); \r",
+              "});\r",
+              "\r",
+              "// ==========================================\r",
+              "// 2. VERIFICAÇÕES DE ESTRUTURA (CONTRATO)\r",
+              "// ==========================================\r",
+              "const jsonData = pm.response.json();\r",
+              "\r",
+              "pm.test(\"O corpo da resposta contém toda a estrutura de paginação esperada\", function () {\r",
+              "    pm.expect(jsonData).to.be.an('object');\r",
+              "    pm.expect(jsonData).to.have.property('content').that.is.an('array');\r",
+              "    pm.expect(jsonData).to.have.property('last').that.is.a('boolean');\r",
+              "    pm.expect(jsonData).to.have.property('totalElements').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('totalPages').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('size').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('number').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('first').that.is.a('boolean');\r",
+              "    pm.expect(jsonData).to.have.property('numberOfElements').that.is.a('number');\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Se houver séries no 'content', os atributos obrigatórios estão presentes\", function() {\r",
+              "    if (jsonData.content.length > 0) {\r",
+              "        let serieAmostra = jsonData.content[0];\r",
+              "        \r",
+              "        // Campos obrigatórios comuns\r",
+              "        pm.expect(serieAmostra).to.have.property('id').that.is.a('number');\r",
+              "        pm.expect(serieAmostra).to.have.property('name').that.is.a('string');\r",
+              "        pm.expect(serieAmostra).to.have.property('url').that.is.a('string');\r",
+              "        pm.expect(serieAmostra).to.have.property('genders').that.is.an('array');\r",
+              "        pm.expect(serieAmostra).to.have.property('year').that.is.a('number');\r",
+              "\r",
+              "        // Validação condicional para campos opcionais (evita falsos negativos)\r",
+              "        if (serieAmostra.hasOwnProperty('directors') && serieAmostra.directors !== null) {\r",
+              "            pm.expect(serieAmostra.directors).to.be.a('string');\r",
+              "        }\r",
+              "        if (serieAmostra.hasOwnProperty('actors') && serieAmostra.actors !== null) {\r",
+              "            pm.expect(serieAmostra.actors).to.be.a('string');\r",
+              "        }\r",
+              "    }\r",
+              "});\r",
+              "\r",
+              "// ==========================================\r",
+              "// 3. VERIFICAÇÕES DE LÓGICA E REGRAS DE NEGÓCIO\r",
+              "// ==========================================\r",
+              "pm.test(\"Integridade dos dados: o tamanho do 'content' corresponde ao 'numberOfElements'\", function () {\r",
+              "    pm.expect(jsonData.content.length).to.eql(jsonData.numberOfElements);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"A página e o tamanho retornados refletem os parâmetros enviados na URL\", function () {\r",
+              "    let queryPage = pm.request.url.query.get(\"page\");\r",
+              "    let querySize = pm.request.url.query.get(\"size\");\r",
+              "    \r",
+              "    let expectedPage = queryPage !== undefined ? parseInt(queryPage) : 0;\r",
+              "    let expectedSize = querySize !== undefined ? parseInt(querySize) : 5;\r",
+              "    \r",
+              "    pm.expect(jsonData.number).to.eql(expectedPage, \"O número da página não confere com a URL.\");\r",
+              "    pm.expect(jsonData.size).to.eql(expectedSize, \"O limite (size) não confere com a URL.\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Consistência das flags booleanas de navegação ('first' e 'last')\", function () {\r",
+              "    // Validação da flag 'first' (com a sintaxe Chai corrigida)\r",
+              "    if (jsonData.number === 0) {\r",
+              "        pm.expect(jsonData.first, \"Deveria ser a primeira página (first = true)\").to.be.true;\r",
+              "    } else {\r",
+              "        pm.expect(jsonData.first, \"Não deveria ser a primeira página (first = false)\").to.be.false;\r",
+              "    }\r",
+              "\r",
+              "    // Validação da flag 'last'\r",
+              "    if (jsonData.totalPages > 0 && jsonData.number === (jsonData.totalPages - 1)) {\r",
+              "        pm.expect(jsonData.last, \"Deveria ser a última página (last = true)\").to.be.true;\r",
+              "    } else if (jsonData.totalPages > 0) {\r",
+              "        pm.expect(jsonData.last, \"Não deveria ser a última página (last = false)\").to.be.false;\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/series?page=0&size=5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "series"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "5"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar livros",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// ==========================================\r",
+              "// 1. VERIFICAÇÕES DE STATUS E PERFORMANCE\r",
+              "// ==========================================\r",
+              "pm.test(\"Status code é 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Tempo de resposta aceitável (< 800ms)\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(800); \r",
+              "});\r",
+              "\r",
+              "// ==========================================\r",
+              "// 2. VERIFICAÇÕES DE ESTRUTURA (CONTRATO)\r",
+              "// ==========================================\r",
+              "const jsonData = pm.response.json();\r",
+              "\r",
+              "pm.test(\"O corpo da resposta contém toda a estrutura de paginação esperada\", function () {\r",
+              "    pm.expect(jsonData).to.be.an('object');\r",
+              "    pm.expect(jsonData).to.have.property('content').that.is.an('array');\r",
+              "    pm.expect(jsonData).to.have.property('last').that.is.a('boolean');\r",
+              "    pm.expect(jsonData).to.have.property('totalElements').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('totalPages').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('size').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('number').that.is.a('number');\r",
+              "    pm.expect(jsonData).to.have.property('first').that.is.a('boolean');\r",
+              "    pm.expect(jsonData).to.have.property('numberOfElements').that.is.a('number');\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Se houver livros no 'content', os atributos obrigatórios estão presentes\", function() {\r",
+              "    if (jsonData.content.length > 0) {\r",
+              "        let livroAmostra = jsonData.content[0];\r",
+              "        \r",
+              "        // Campos obrigatórios comuns para todos os livros\r",
+              "        pm.expect(livroAmostra).to.have.property('id').that.is.a('number');\r",
+              "        pm.expect(livroAmostra).to.have.property('name').that.is.a('string');\r",
+              "        pm.expect(livroAmostra).to.have.property('url').that.is.a('string');\r",
+              "        pm.expect(livroAmostra).to.have.property('genders').that.is.an('array');\r",
+              "        pm.expect(livroAmostra).to.have.property('year').that.is.a('number');\r",
+              "\r",
+              "        // Validação condicional para campos opcionais (evita que o teste falhe se não houver autor)\r",
+              "        if (livroAmostra.hasOwnProperty('authors') && livroAmostra.authors !== null) {\r",
+              "            pm.expect(livroAmostra.authors).to.be.a('string');\r",
+              "        }\r",
+              "    }\r",
+              "});\r",
+              "\r",
+              "// ==========================================\r",
+              "// 3. VERIFICAÇÕES DE LÓGICA E REGRAS DE NEGÓCIO\r",
+              "// ==========================================\r",
+              "pm.test(\"Integridade dos dados: o tamanho do 'content' corresponde ao 'numberOfElements'\", function () {\r",
+              "    pm.expect(jsonData.content.length).to.eql(jsonData.numberOfElements);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"A página e o tamanho retornados refletem os parâmetros enviados na URL\", function () {\r",
+              "    // Captura dinâmica dos parâmetros da URL da requisição atual\r",
+              "    let queryPage = pm.request.url.query.get(\"page\");\r",
+              "    let querySize = pm.request.url.query.get(\"size\");\r",
+              "    \r",
+              "    let expectedPage = queryPage !== undefined ? parseInt(queryPage) : 0;\r",
+              "    let expectedSize = querySize !== undefined ? parseInt(querySize) : 5;\r",
+              "    \r",
+              "    pm.expect(jsonData.number).to.eql(expectedPage, \"O número da página não confere com a URL.\");\r",
+              "    pm.expect(jsonData.size).to.eql(expectedSize, \"O limite (size) não confere com a URL.\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Consistência das flags booleanas de navegação ('first' e 'last')\", function () {\r",
+              "    // Validação da flag 'first'\r",
+              "    if (jsonData.number === 0) {\r",
+              "        pm.expect(jsonData.first, \"Deveria ser a primeira página (first = true)\").to.be.true;\r",
+              "    } else {\r",
+              "        pm.expect(jsonData.first, \"Não deveria ser a primeira página (first = false)\").to.be.false;\r",
+              "    }\r",
+              "\r",
+              "    // Validação da flag 'last'\r",
+              "    if (jsonData.totalPages > 0 && jsonData.number === (jsonData.totalPages - 1)) {\r",
+              "        pm.expect(jsonData.last, \"Deveria ser a última página (last = true)\").to.be.true;\r",
+              "    } else if (jsonData.totalPages > 0) {\r",
+              "        pm.expect(jsonData.last, \"Não deveria ser a última página (last = false)\").to.be.false;\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/libros?page=0&size=5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libros"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "5"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
