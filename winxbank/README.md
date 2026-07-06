@@ -51,3 +51,9 @@ Este repositório está estruturado da seguinte forma:
     * /sistemabancario/ - Camada com classes do sistema bancário
     * /sistemaclientes/ - Camada com classes do sistema de clientes
     * /tempo/ - Camada responsável por controlar uma simulação de tempo.
+
+# 5. Caminho para os testes de sistema
+
+Os testes de sistema (E2E) estão localizados na **branch `segunda-entrega`**, no diretório:
+
+> webapp-1 > TrackOrJargh > src > test/java/com/trackorjargh/e2e
