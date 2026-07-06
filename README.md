@@ -33,14 +33,22 @@ Sistema bancário desenvolvido em Java com Maven. Nesta entrega, o foco evoluiu 
 Aplicação web para avaliação de mídias (Spring Boot + Angular). Nesta entrega, a validação manual deu lugar a avaliações normativas e automação E2E.
 
 ### Estratégias e Ferramentas Aplicadas
-* **Avaliação Normativa (ISO/IEC 25010):** Documento detalhado indicando as medidas dos atributos de qualidade do sistema (Adequação Funcional, Eficiência, Compatibilidade, Usabilidade, Confiabilidade, Segurança, Manutenibilidade e Flexibilidade) em uma escala de 1 a 5, validando as especificações ideais do produto.
-* **Testes de Sistema (E2E - End-to-End):** Implementação de testes de interface utilizando **Selenium** (ou ferramenta similar). Foram desenvolvidos testes automatizados cobrindo os fluxos principais de cada membro da equipe.
-* **Testes Não Funcionais:** Avaliação prática de atributos específicos de qualidade, como testes de carga/desempenho ou validação de segurança da aplicação web.
-* ### Caminho para os testes de sistema E2E
+
+- **Avaliação Normativa (ISO/IEC 25010):** Documento detalhado indicando as medidas dos atributos de qualidade do sistema (Adequação Funcional, Eficiência, Compatibilidade, Usabilidade, Confiabilidade, Segurança, Manutenibilidade e Flexibilidade) em uma escala de 1 a 5, validando as especificações ideais do produto.
+
+- **Testes de Sistema (E2E - End-to-End):** Implementação de testes de interface utilizando **Selenium** (ou ferramenta similar). Foram desenvolvidos testes automatizados cobrindo os fluxos principais de cada membro da equipe.
+
+- **Testes Não Funcionais:** Avaliação prática de atributos específicos de qualidade, como testes de carga/desempenho ou validação de segurança da aplicação web.
+
+### Caminho para os testes de sistema E2E
+
 Os testes de sistema (E2E) estão localizados na **branch `segunda-entrega`**, no diretório:
-> webapp-1 > TrackOrJargh > src > test/java/com/trackorjargh/e2e
-* ### Como Executar os Testes E2E
-- mvn test => executa todos os testes
-- mvn test -Dtest=<teste-especifico> => executa um teste específico
+
+> `webapp-1 > TrackOrJargh > src > test/java/com/trackorjargh/e2e`
+
+### Como Executar os Testes E2E
+
+- `mvn test` → executa todos os testes.
+- `mvn test -Dtest=<teste-especifico>` → executa um teste específico.
 
 
